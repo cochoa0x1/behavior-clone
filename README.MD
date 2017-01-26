@@ -8,6 +8,13 @@ Trains a neural network to drive a car in a simulator provided by udacity.
 
 ## Setup
 
+requirements: Tensorflow, keras 1.2.0
+
+setup environment:
+
+>> conda env create -f environment.yml
+
+
 place training data in their own folders inside a folder called data at root level.
 
 ## Pre Processing
@@ -48,8 +55,6 @@ The log data was split into 70% training and 20% testing and 10% validation.
 Because of it's adaptive learning rate, the Adam optimizer was used for up to 15 epochs. Training was stopped early via the keras early stopping callback at the 8th epoch when the testing loss started increasing. 
 
 ## Performance
-
-I trained two models:
 
 The model was trained on 5000 rows from the first track, all in the forward direction, that I drove using a ps3 controller (for smooth angles). This model can drive at full speed around the first track without issue but crashes on the second.
 
