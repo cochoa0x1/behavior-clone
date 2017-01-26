@@ -8,19 +8,7 @@ Trains a neural network to drive a car in a simulator provided by udacity.
 
 ## Setup
 
-place training data in their own folders inside a folder called data at root level
-
-model.py
-drive.py
-data/
-	forward_pass_level_1/ (example)
-		IMG/
-		driving_log.csv
-	forward_pass_level_2/
-	.
-	.
-	.
-	more_data/
+place training data in their own folders inside a folder called data at root level.
 
 ## Pre Processing
 
