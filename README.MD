@@ -25,35 +25,19 @@ To increase the amount of variety the network could learn on new images were gen
 * darkening the images
 * generating banked turns (rotating the image)
 
+sample data:
+![sample_input.png](https://bitbucket.org/repo/a8jeKG/images/2958215797-sample_input.png)
+
+model input:
+![sample_process.png](https://bitbucket.org/repo/a8jeKG/images/4182778917-sample_process.png)
+
 ## Model
 
 Three levels of two stacked convolutions (3x3) were used along with a max pooling (2x2) layer. 50% dropout and regularization were used to prevent overfitting. Initially relu's were used but training often became stuck. Much better results were found using elu's.
 
 The features were then fed to a three layer feed forward network with layers of 512,64, and 16.
 
-input-->
-
-[(3x3, 32) conv2d, relu]
-[(3x3, 32) conv2d, relu]
-[(2x2) max pool]
-50% dropout
-
-[(3x3, 64) conv2d, relu]
-[(3x3, 64) conv2d, relu]
-[(2x2) max pool]
-50% dropout
-
-[(3x3, 128) conv2d, relu]
-[(3x3, 128) conv2d, relu]
-[(2x2) max pool]
-50% dropout
-
--->flatten-->
-
-[(512) dense, relu]
-[(64) dense, relu]
-[(16) dense, relu]
---> output
+![network.png](https://bitbucket.org/repo/a8jeKG/images/2478000008-network.png)
 
 Smaller models were tried at first yielding similar loss values, however the actual performance was worse in the simulator (lots of swerving etc). After trying several networks with okay performance I came across this blog post by Vivek Yadav (https://chatbotslife.com/using-augmentation-to-mimic-human-driving-496b569760a9#.iw798nwuv) which heavily influenced the architecture above.
 
