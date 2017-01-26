@@ -55,8 +55,8 @@ The model was trained on 5000 rows from the first track, all in the forward dire
 
 The model exhibit a little bit of swerving that is unnatural. I believe this is partly caused by two reasons:
 
-	1. poor driving behaviour in the training data (driving with a controller felt unnatural and there are sometimes corrections)
-	2. Low control update frequency of simulator. If the simulator could sample at ten times the rate perhaps the car would not veer too much in one direction or the other before correcting.
+1. poor driving behaviour in the training data (driving with a controller felt unnatural and there are sometimes corrections)
+2. Low control update frequency of simulator. If the simulator could sample at ten times the rate perhaps the car would not veer too much in one direction or the other before correcting.
 
 To help remedy this I experimented with a top speed of 25 and it is not as visible. 
 
