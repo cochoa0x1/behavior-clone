@@ -1,0 +1,94 @@
+Auto Mc Pilot
+
+Charles Ochoa
+
+Trains a neural network to drive a car in a simulator provided by udacity.
+
+
+## Setup
+
+place training data in their own folders inside a folder called data at root level
+
+model.py
+drive.py
+data/
+	forward_pass_level_1/ (example)
+		IMG/
+		driving_log.csv
+	forward_pass_level_2/
+	.
+	.
+	.
+	more_data/
+
+## Pre Processing
+
+Adjusting the sampling method for the dataset yielded dramatically different results. By trial and error I ended up selecting a sampling method that preferred a curvy image (steering angle != 0) 90% of the time. I did not utilize course corrections from the simulator (or I did not intentionally drive any), instead I used the left and right camera angles with a hard coded angle adjustment of .25. I found that if I sampled too many of these off angle camera images the car would swerve often so I settled on a sampling rate of 75% center camera 25% other.
+
+To make the left and right camera images more like the center camera, I first removed the car's hood by trimming the bottom 25 pixels. Then, figuring powers of 2 might be prefered by my gpu, I resized the images to 256x256 (upsize) then to 128x128 and later to 64x64 to speed up training and allow my model to fit in gpu memory as the network became deeper.
+
+## Data Generation
+
+To increase the amount of variety the network could learn on, I flipped the images between left and right and negated their steering angles. I experimented with darkening the images randomly but found this did not help. 
+
+## Model
+
+Three levels of two stacked convolutions (3x3) were used along with a max pooling (2x2) layer. 50% dropout and regularization were used to prevent overfitting.
+
+The features were then fed to a three layer feed forward network with layers of 512,64, and 16.
+
+input-->
+
+[(3x3, 32) conv2d, relu]
+[(3x3, 32) conv2d, relu]
+[(2x2) max pool]
+50% dropout
+
+[(3x3, 64) conv2d, relu]
+[(3x3, 64) conv2d, relu]
+[(2x2) max pool]
+50% dropout
+
+[(3x3, 128) conv2d, relu]
+[(3x3, 128) conv2d, relu]
+[(2x2) max pool]
+50% dropout
+
+-->flatten-->
+
+[(512) dense, relu]
+[(64) dense, relu]
+[(16) dense, relu]
+--> output
+
+Smaller models were tried at first yielding similar loss values, however the actual performance was worse in the simulator (lots of swerving etc). I initially tried to follow the NVIDIA network design but found myself getting stuck in local minima often. After trying several networks with okay performance I came across this blog post by Vivek Yadav (https://chatbotslife.com/using-augmentation-to-mimic-human-driving-496b569760a9#.iw798nwuv) which heavily influenced the architecture above.
+
+## Training
+
+The log data was split into 80% training and 20% testing. The ultimate validation set was "does the car make it around the track".
+
+The adam optimizer was used for 10 epochs of 5* number of batches in training data. A batch size of 128 was used and 2000 samples of the validation set were used to track performance. After around 6 or 7 batches I found sometimes I would overfit (training loss would decrease, validation loss would increase) and some early stopping method would be a nice thing to add on later. The networks were trained on a single GTX1080. I found the gpu utilization empirically to be around 60% suggesting the generate_batch generator is perhaps too slow. 
+
+Note: if the validation loss isn't below 0.02 after the first epoch, the optimizer is likely stuck in a local minimum and the script should be re-run.
+
+## Performance
+
+I trained two models:
+
+The first (model.json) was trained on 5000 rows from the first track, all in the forward direction, that I drove using a ps3 controller (for smooth angles). This model can drive at full speed around the first track without issue but crashes on the second.
+
+The second model (big_model.json) was trained on a much larger collection of data from both tracks including runs forward and backwards. This model can drive both tracks at full speed.
+
+both models exhibit a little bit of swerving that is unnatural. I believe this is partly caused by two reasons:
+
+	1. poor driving behaviour in the training data (driving with a controller felt unnatural and there are sometimes corrections)
+	2. Low control update frequency of simulator. If the simulator could sample at ten times the rate perhaps the car would not veer too much in one direction or the other before correcting.
+
+To help remedy this I experimented with a top speed of 25 and it is not as visible. 
+
+## Throttle control
+
+Initially I found it easier to make it around the track if I slowed the car down when approaching a turn. This was motivated by real life driving where that is sometimes a good idea. I would like to extend the model to learn to brake and accelerate but the simulator would need tracks where braking is required and I would need to get better at handling the car while generating the training data.
+
+This is just a vestige right now, the models supplied work at full speed.
+

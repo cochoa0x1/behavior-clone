@@ -1,0 +1,8 @@
+/data
+/all_data
+/models
+/simulator_linux
+/__pycache__
+/submit
+*.ipynb
+*.pyc
