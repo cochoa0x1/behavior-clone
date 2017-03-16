@@ -1,4 +1,4 @@
-Auto Pilot
+## Auto Pilot (via behavioral cloning)
 
 Charles Ochoa
 
@@ -33,10 +33,10 @@ To increase the amount of variety the network could learn on new images were gen
 * generating banked turns (rotating the image)
 
 sample data:
-![sample_input.png](https://bitbucket.org/repo/a8jeKG/images/2958215797-sample_input.png)
+![sample_input.png](images/sample_input.png)
 
 model input:
-![sample_process.png](https://bitbucket.org/repo/a8jeKG/images/4182778917-sample_process.png)
+![sample_process.png](images/sample_process.png)
 
 ## Model
 
@@ -44,7 +44,7 @@ Three levels of two stacked convolutions (3x3) were used along with a max poolin
 
 The features were then fed to a three layer feed forward network with layers of 512,64, and 16.
 
-![network.png](https://bitbucket.org/repo/a8jeKG/images/2478000008-network.png)
+![network.png](images/network.png)
 
 Smaller models were tried at first yielding similar loss values, however the actual performance was worse in the simulator (lots of swerving etc). After trying several networks with okay performance I came across this blog post by Vivek Yadav (https://chatbotslife.com/using-augmentation-to-mimic-human-driving-496b569760a9#.iw798nwuv) which heavily influenced the architecture above.
 
